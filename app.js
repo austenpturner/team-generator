@@ -9,6 +9,8 @@ let managers = [];
 let engineers = [];
 let interns = [];
 
+inquireMember();
+
 function inquireMember() {
     memberId++;
     inquirer.prompt([
@@ -32,92 +34,82 @@ function inquireMember() {
         }
     ]).then(( {name, position, email} ) => {
         if (position === 'Manager') {
-            inquirer.prompt([
-                {
-                    message: 'Enter manager office number:',
-                    name: 'number'
-                }
-            ]).then(( {number} ) => {
-                const officeNumber = parseInt(number);
-                newManager(name, memberId, email, officeNumber);
-            }).then(() => {
-                inquirer.prompt([
-                    {
-                        type: 'confirm',
-                        message: 'Enter another team member?',
-                        name: 'moreMembers'
-                    }
-                ]).then(( { moreMembers }) => {
-                    if (moreMembers) {
-                        inquireMember();
-                    } else {
-                        console.log('Thank you for entering all your team members. A team profile has been generated.');
-                    }
-                })
-            })
+            inquireManager(name, memberId, email);
         } else if (position === 'Engineer') {
-            inquirer.prompt([
-                {
-                    message: 'Enter engineer GitHub username:',
-                    name: 'github'
-                }
-            ]).then(( {github} ) => {
-                newEngineer(name, memberId, email, github);
-            }).then(() => {
-                inquirer.prompt([
-                    {
-                        type: 'confirm',
-                        message: 'Enter another team member?',
-                        name: 'moreMembers'
-                    }
-                ]).then(( { moreMembers }) => {
-                    if (moreMembers) {
-                        inquireMember();
-                    } else {
-                        console.log('Thank you for entering all your team members. A team profile has been generated.');
-                    }
-                })
-            })
+            inquireEngineer(name, memberId, email);
         } else {
-            inquirer.prompt([
-                {
-                    message: 'Enter intern\'s school:',
-                    name: 'school'
-                }
-            ]).then(( {school} ) => {
-                newIntern(name, memberId, email, school);
-            }).then(() => {
-                inquirer.prompt([
-                    {
-                        type: 'confirm',
-                        message: 'Enter another team member?',
-                        name: 'moreMembers'
-                    }
-                ]).then(( { moreMembers }) => {
-                    if (moreMembers) {
-                        inquireMember();
-                    } else {
-                        console.log('Thank you for entering all your team members. A team profile has been generated.');
-                    }
-                })
-            })
+            inquireIntern(name, memberId, email);
         }
     })
 }
 
-inquireMember();
-
 function newManager(name, id, email, officeNumber) {
-    const teamManager = new Manager(name, id, email, officeNumber);
-    console.log(teamManager);
+    managers.push(new Manager(name, id, email, officeNumber));
+    // console.log(managers);
 }
 
 function newEngineer(name, id, email, github) {
-    const engineer1 = new Engineer(name, id, email, github);
-    console.log(engineer1);
+    engineers.push(new Engineer(name, id, email, github));
+    // console.log(engineers);
 }
 
 function newIntern(name, id, email, school) {
-    const intern1 = new Intern(name, id, email, school);
-    console.log(intern1);
+    interns.push(new Intern(name, id, email, school));
+    // console.log(interns);
 }
+
+function inquireManager(name, memberId, email) {
+    inquirer.prompt([
+        {
+            message: 'Enter manager office number:',
+            name: 'number'
+        }
+    ]).then(( {number} ) => {
+        const officeNumber = parseInt(number);
+        newManager(name, memberId, email, officeNumber);
+    }).then(() => {
+        inquireAgain();
+    });
+}
+
+function inquireEngineer(name, memberId, email) {
+    inquirer.prompt([
+        {
+            message: 'Enter engineer GitHub username:',
+            name: 'github'
+        }
+    ]).then(( {github} ) => {
+        newEngineer(name, memberId, email, github);
+    }).then(() => {
+        inquireAgain();
+    });
+}
+
+function inquireIntern(name, memberId, email) {
+    inquirer.prompt([
+        {
+            message: 'Enter intern\'s school:',
+            name: 'school'
+        }
+    ]).then(( {school} ) => {
+        newIntern(name, memberId, email, school);
+    }).then(() => {
+        inquireAgain();
+    });
+}
+
+function inquireAgain() {
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            message: 'Enter another team member?',
+            name: 'moreMembers'
+        }
+    ]).then(( { moreMembers }) => {
+        if (moreMembers) {
+            inquireMember();
+        } else {
+            console.log('Thank you for entering all your team members. A team profile has been generated.');
+        }
+    });
+};
