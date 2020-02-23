@@ -1,28 +1,12 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
-const express = require('express');
-const path = require("path");
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
-const writeHTML = require('./lib/writeHTML');
-
-const PORT = 9000;
-const app = express();
-
-// app.set('view engine', 'ejs');
-
-app.listen(PORT, () => {
-    console.log(`App listening on PORT ${PORT}`);
-    inquireMember();
-});
+const renderTeamHTML = require('./lib/writeHTML');
 
 let memberId = 0;
-let managers = [];
-let engineers = [];
-let interns = [];
 let teamMembers = [];
-let cards = [];
 
 inquireMember();
 
@@ -59,18 +43,15 @@ function inquireMember() {
 };
 
 function newManager(name, id, email, officeNumber) {
-    managers.push(new Manager(name, id, email, officeNumber));
-    teamMembers.push(managers);
+    teamMembers.push(new Manager(name, id, email, officeNumber));
 };
 
 function newEngineer(name, id, email, github) {
-    engineers.push(new Engineer(name, id, email, github));
-    teamMembers.push(engineers);
+    teamMembers.push(new Engineer(name, id, email, github));
 };
 
 function newIntern(name, id, email, school) {
-    interns.push(new Intern(name, id, email, school));
-    teamMembers.push(interns);
+    teamMembers.push(new Intern(name, id, email, school));
 };
 
 function inquireManager(name, memberId, email) {
@@ -121,74 +102,21 @@ function inquireAgain() {
         if (moreMembers) {
             inquireMember();
         } else {
-            for (let memberType of teamMembers) {
-                writeHTML(memberType);
-            }
-            renderTeamHTML();
-            console.log('Thank you for entering all your team members. A team profile has been generated.');
+            const teamHTML = renderTeamHTML(teamMembers);
+            writeTeamHTML(teamHTML);
+
+            console.log('Thank you for entering your team members. A team profile is being generated....');
         }
     });
 };
 
-function writeHTML(memberArray) {
-    memberArray.forEach( member => {
-        const role = member.getRole();
-        let specificVal;
-        let specificKey;
-        if (role === 'Manager') {
-            specificKey = 'Office Number';
-            specificVal = member.getOfficeNumber();
-        } else if (role === 'Engineer') {
-            specificKey = 'GitHub';
-            specificVal = member.getGithub();
-        } else {
-            specificKey = 'School';
-            specificVal = member.getSchool();
-        }
-        const cardHTML = `
-            <div class="card">
-                <h5 class="card-header">${member.name}</h5>
-                <div class="card-body">
-                <h5 class="card-title">${role}</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">ID: ${member.id}</li>
-                        <li class="list-group-item">Email: <a href=mailto:${member.email}>${member.email}</a></li>
-                        <li class="list-group-item">${specificKey}: ${specificVal}</li>
-                    </ul>
-                </div>
-            </div>`
-
-        cards.push(cardHTML);
-    })
-};
-
-function renderTeamHTML() {
-    let mainHTML = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Team Profile</title>
-    
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    </head>
-    <body>
-    `;
-    cards.forEach( card => {
-        mainHTML += card;
-    })
-    mainHTML += `
-    </body>
-    </html>
-    `;
-
-    fs.appendFile('./templates/main.html', mainHTML, (err) => {
+function writeTeamHTML(html) {
+    fs.writeFile('team.html', html, (err) => {
         if (err) {
             return err;
         }
-
-        console.log('written to main.html');
+    
+        console.log('Team profiled generated and written to team.html.\r\nOpen team.html in a web browser to view your team profile.');
     })
-}
+};
 

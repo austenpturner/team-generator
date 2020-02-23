@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intern</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
-    <div class="card">
-        <h5 class="card-header">${name}</h5>
-        <div class="card-body">
-            <h5 class="card-title">Intern</h5>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email: <a href=mailto:${email}>${email}</a></li>
-                <li class="list-group-item">School: ${school}</li>
-            </ul>
-        </div>
+<div class="card">
+    <h5 class="card-header">{{ name }}</h5>
+    <div class="card-body">
+        <h5 class="card-title">{{ role }}</h5>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: {{ id }}</li>
+            <li class="list-group-item">Email: <a href=mailto:{{ email }}>{{ email }}</a></li>
+            <li class="list-group-item">School: {{ school }}</li>
+        </ul>
     </div>
-</body>
-</html>
+</div>
