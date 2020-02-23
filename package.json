@@ -1,0 +1,27 @@
+{
+  "name": "team-generator",
+  "version": "1.0.0",
+  "description": "A Node CLI application that allows a manager to generate a website with their team's information",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austenpturner/team-generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/austenpturner/team-generator/issues"
+  },
+  "homepage": "https://github.com/austenpturner/team-generator#readme",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  }
+}
