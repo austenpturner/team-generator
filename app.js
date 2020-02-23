@@ -1,13 +1,27 @@
 const fs = require('fs');
-const inquirer = require('../node_modules/inquirer');
+const inquirer = require('inquirer');
+const express = require('express');
+const path = require("path");
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
+const writeHTML = require('./lib/writeHTML');
+
+const PORT = 9000;
+const app = express();
+
+// app.set('view engine', 'ejs');
+
+app.listen(PORT, () => {
+    console.log(`App listening on PORT ${PORT}`);
+    inquireMember();
+});
 
 let memberId = 0;
 let managers = [];
 let engineers = [];
 let interns = [];
+let teamMembers = [];
 let cards = [];
 
 inquireMember();
@@ -46,26 +60,28 @@ function inquireMember() {
 
 function newManager(name, id, email, officeNumber) {
     managers.push(new Manager(name, id, email, officeNumber));
+    teamMembers.push(managers);
 };
 
 function newEngineer(name, id, email, github) {
     engineers.push(new Engineer(name, id, email, github));
+    teamMembers.push(engineers);
 };
 
 function newIntern(name, id, email, school) {
     interns.push(new Intern(name, id, email, school));
+    teamMembers.push(interns);
 };
 
 function inquireManager(name, memberId, email) {
     inquirer.prompt([
         {
-            message: 'Enter manager office number:',
+            message: 'Enter manager\'s office number:',
             name: 'number'
         }
     ]).then(( {number} ) => {
         const officeNumber = parseInt(number);
         newManager(name, memberId, email, officeNumber);
-    }).then(() => {
         inquireAgain();
     });
 };
@@ -73,12 +89,11 @@ function inquireManager(name, memberId, email) {
 function inquireEngineer(name, memberId, email) {
     inquirer.prompt([
         {
-            message: 'Enter engineer GitHub username:',
+            message: 'Enter engineer\'s GitHub username:',
             name: 'github'
         }
     ]).then(( {github} ) => {
         newEngineer(name, memberId, email, github);
-    }).then(() => {
         inquireAgain();
     });
 };
@@ -91,7 +106,6 @@ function inquireIntern(name, memberId, email) {
         }
     ]).then(( {school} ) => {
         newIntern(name, memberId, email, school);
-    }).then(() => {
         inquireAgain();
     });
 };
@@ -103,13 +117,13 @@ function inquireAgain() {
             message: 'Enter another team member?',
             name: 'moreMembers'
         }
-    ]).then(( { moreMembers }) => {
+    ]).then(( {moreMembers} ) => {
         if (moreMembers) {
             inquireMember();
         } else {
-            writeHTML(managers);
-            writeHTML(engineers);
-            writeHTML(interns);
+            for (let memberType of teamMembers) {
+                writeHTML(memberType);
+            }
             renderTeamHTML();
             console.log('Thank you for entering all your team members. A team profile has been generated.');
         }
@@ -118,28 +132,38 @@ function inquireAgain() {
 
 function writeHTML(memberArray) {
     memberArray.forEach( member => {
-        const keys = Object.keys(member);
         const role = member.getRole();
-        const values = Object.values(member);
+        let specificVal;
+        let specificKey;
+        if (role === 'Manager') {
+            specificKey = 'Office Number';
+            specificVal = member.getOfficeNumber();
+        } else if (role === 'Engineer') {
+            specificKey = 'GitHub';
+            specificVal = member.getGithub();
+        } else {
+            specificKey = 'School';
+            specificVal = member.getSchool();
+        }
         const cardHTML = `
             <div class="card">
-                <h5 class="card-header">${values[0]}</h5>
+                <h5 class="card-header">${member.name}</h5>
                 <div class="card-body">
                 <h5 class="card-title">${role}</h5>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">ID: ${values[1]}</li>
-                        <li class="list-group-item">Email: <a href=mailto:${values[2]}>${values[2]}</a></li>
-                        <li class="list-group-item">${keys[3]}: ${values[3]}</li>
+                        <li class="list-group-item">ID: ${member.id}</li>
+                        <li class="list-group-item">Email: <a href=mailto:${member.email}>${member.email}</a></li>
+                        <li class="list-group-item">${specificKey}: ${specificVal}</li>
                     </ul>
                 </div>
             </div>`
-        cards.push(cardHTML);
 
+        cards.push(cardHTML);
     })
 };
 
 function renderTeamHTML() {
-    let teamHTML = `
+    let mainHTML = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -152,18 +176,19 @@ function renderTeamHTML() {
     <body>
     `;
     cards.forEach( card => {
-        teamHTML += card;
+        mainHTML += card;
     })
-    teamHTML += `
+    mainHTML += `
     </body>
     </html>
     `;
 
-    fs.writeFile('trial.html', teamHTML, (err) => {
+    fs.appendFile('./templates/main.html', mainHTML, (err) => {
         if (err) {
             return err;
         }
 
-        console.log('written to trial.html');
+        console.log('written to main.html');
     })
 }
+
