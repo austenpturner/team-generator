@@ -111,7 +111,7 @@ function inquireAgain() {
 };
 
 function writeTeamHTML(html) {
-    fs.writeFile('team.html', html, (err) => {
+    fs.writeFile('./output/team.html', html, (err) => {
         if (err) {
             return err;
         }
