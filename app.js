@@ -1,9 +1,9 @@
 // npm modules
 const fs = require('fs');
 const inquirer = require('inquirer');
-const Manager = require('./lib/manager');
 
 // js classes
+const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 const renderTeamHTML = require('./lib/writeHTML');
@@ -122,7 +122,7 @@ function writeTeamHTML(html) {
             return err;
         }
     
-        console.log('Team profiled generated and written to team.html.\r\nOpen team.html in a web browser to view your team profile.');
+        console.log('Team profiled generated and written to team.html in the output file.\r\nOpen team.html in a web browser to view your team profile.');
     })
 };
 
