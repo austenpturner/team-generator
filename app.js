@@ -1,15 +1,21 @@
+// npm modules
 const fs = require('fs');
 const inquirer = require('inquirer');
 const Manager = require('./lib/manager');
+
+// js classes
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 const renderTeamHTML = require('./lib/writeHTML');
 
+// variables
 let memberId = 0;
 let teamMembers = [];
 
+// start CLI app
 inquireMember();
 
+// functions
 function inquireMember() {
     memberId++;
     inquirer.prompt([
