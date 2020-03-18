@@ -1,12 +1,20 @@
 // Require Node Modules
 const fs = require('fs');
 const inquirer = require('inquirer');
+const path = require('path');
 
 // Require JS Classes
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 const renderTeamHTML = require('./lib/writeHTML');
+
+const OUTPUT_DIR = path.resolve(__dirname, 'output');
+const outputPath = path.join(OUTPUT_DIR, 'team.html');
+
+if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR)
+};
 
 // Variables
 let memberId = 0;
@@ -117,7 +125,7 @@ function inquireAgain() {
 };
 
 function writeTeamHTML(html) {
-    fs.writeFile('./output/team.html', html, (err) => {
+    fs.writeFile(outputPath, html, (err) => {
         if (err) {
             return err;
         }
