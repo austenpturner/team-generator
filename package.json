@@ -23,5 +23,10 @@
   "homepage": "https://github.com/austenpturner/team-generator#readme",
   "devDependencies": {
     "jest": "^25.1.0"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "inquirer": "^7.1.0",
+    "path": "^0.12.7"
   }
 }

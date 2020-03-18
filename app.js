@@ -1,21 +1,21 @@
-// npm modules
+// Require Node Modules
 const fs = require('fs');
 const inquirer = require('inquirer');
 
-// js classes
+// Require JS Classes
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 const renderTeamHTML = require('./lib/writeHTML');
 
-// variables
+// Variables
 let memberId = 0;
 let teamMembers = [];
 
-// start CLI app
+// Start CLI App
 inquireMember();
 
-// functions
+// Functions
 function inquireMember() {
     memberId++;
     inquirer.prompt([
@@ -125,4 +125,3 @@ function writeTeamHTML(html) {
         console.log('Team profiled generated and written to team.html in the output file.\r\nOpen team.html in a web browser to view your team profile.');
     })
 };
-
